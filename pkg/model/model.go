@@ -4,14 +4,16 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
-// Each variable block in the Terraform configuration file is marshalled into this struct.
+// Variable represents a Terraform variable block. 'It contains all fields that can be present in a variable block.
+// The variable name is stored separately.
 type Variable struct {
 	Default     hcl.Expression `hcl:"default"`
 	Description *string        `hcl:"description"`
 	Nullable    *bool          `hcl:"nullable"`
 	// Sensitive is ignored.
 	Sensitive *bool `hcl:"sensitive"`
-	// Validation blocks can be used to add extra rules to the JSON schema, as long as their conditions are written in a certain format.
+	// Validation blocks can be used to add extra rules to the JSON schema, as long as their conditions
+	// are written in a certain format.
 	Validation *ValidationBlock `hcl:"validation,block"`
 	Type       hcl.Expression   `hcl:"type"`
 }

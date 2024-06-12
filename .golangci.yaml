@@ -1,0 +1,119 @@
+run:
+  timeout: 240s
+  tests: true
+
+linters-settings:
+  lll:
+    line-length: 128
+  goimports:
+    local-prefixes: "github.com/AislingHPE"
+  godox:
+    keywords:
+      - OPTIMIZE
+  exhaustive:
+    default-signifies-exhaustive: true
+  funlen:
+    lines: 90
+    statements: 60
+  cyclop:
+    max-complexity: 14
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - disableStutteringCheck
+      - name: var-naming
+        # Suppress warnings about Id "initialism" - i.e. make Id and ID valid
+        arguments: [["ID"]]
+
+linters:
+  disable-all: true
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - cyclop
+    - decorder
+    - dogsled
+    - dupl
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - execinquery
+    - exhaustive
+    - exportloopref
+    - funlen
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godox
+    - gofmt
+    - gofumpt
+    - goheader
+    - goimports
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - grouper
+    - importas
+    - ineffassign
+    - lll
+    - maintidx
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - prealloc
+    - predeclared
+    - revive
+    - staticcheck
+    - stylecheck
+    - tenv
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - whitespace
+
+issues:
+  include:
+      # Match function comment to function name
+      - EXC0012
+      - EXC0013
+      - EXC0014
+      - EXC0015
+
+  exclude:
+    # We want to allow exporting const/var/type without comments
+    # but enforce comments for functions/methods.
+    # TODO: Remove method and function from the below (when we can)
+    - "exported (const|var|type|method|function) (.+) should have comment (.+) or be unexported"
+    - "exported (const|var|type|method|function) (.+) should have comment or be unexported"
+  # don't read the vendor folder.
+  exclude-dirs-use-default: true
+
+  exclude-rules:
+    # ignore function length for tests as look up tables typically exceed.
+    - linters:
+        - funlen
+      path: _test\.go
+
+  max-same-issues: 0
