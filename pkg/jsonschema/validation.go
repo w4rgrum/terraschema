@@ -25,7 +25,6 @@ func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[strin
 		"a <= (variable or variable length) < b (&& ...)": comparison,
 		"can(regex(\"...\",var.input_parameter))":         canRegex,
 	}
-	applied := false
 	for _, fn := range functions {
 		updatedNode, err := fn(ex, name, t)
 		if err == nil {
@@ -34,17 +33,12 @@ func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[strin
 			for k, v := range updatedNode {
 				(*m)[k] = v
 			}
-			applied = true
 
-			break
+			return nil
 		}
 	}
 
-	if !applied {
-		return ErrConditionNotApplied
-	}
-
-	return nil
+	return ErrConditionNotApplied
 }
 
 func isOneOf(ex hcl.Expression, name string, _ string) (map[string]any, error) {

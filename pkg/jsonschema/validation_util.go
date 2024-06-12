@@ -106,6 +106,11 @@ func parseComparisonExpression(ex *hclsyntax.BinaryOpExpr, name string, node *ma
 		return fmt.Errorf("could not convert value to number: %w", err)
 	}
 
+	// valid comparisons:
+	// var <> number when type(var) == number
+	// len(var) <> number when type(var) == array,object,string
+	// len(var) == number when type(var) == array,object,string
+
 	condition1 := isExpressionVarName(ex.LHS, name) &&
 		nodeType == "number" &&
 		ex.Op != hclsyntax.OpEqual // don't compare a number to a number with ==. Use const if needed later.
@@ -116,15 +121,10 @@ func parseComparisonExpression(ex *hclsyntax.BinaryOpExpr, name string, node *ma
 	} else {
 		return fmt.Errorf("variable name not found")
 	}
-
-	// // valid comparisons:
-	// // var <>= number when type(var) == number
-	// // len(var) <>= number when type(var) == array,object,string
-	// // len(var) == number when type(var) == array,object,string
 }
 
 func performOp(op *hclsyntax.Operation, node *map[string]any, num float64, nodeType string) error {
-	// bundle the op and type name together
+	// bundle the operation and type name together
 	type operationWithTypeName struct {
 		operation *hclsyntax.Operation
 		typeName  string

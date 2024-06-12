@@ -13,7 +13,7 @@ import (
 	"github.com/AislingHPE/TerraSchema/pkg/reader"
 )
 
-func TestExpressionToJSONObject(t *testing.T) {
+func TestExpressionToJSONObject_Default(t *testing.T) {
 	t.Parallel()
 	tfPath := "../../test/modules"
 	expectedPath := "../../test/expected/"
