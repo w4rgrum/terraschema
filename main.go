@@ -13,6 +13,10 @@ func main() {
 	if len(os.Args) > 2 && os.Args[2] == "-strict" { // TODO use cobra or flag
 		strict = true
 	}
-	output := jsonschema.CreateSchema(path, strict)
+	output, err := jsonschema.CreateSchema(path, strict)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(output)
 }
