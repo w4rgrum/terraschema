@@ -46,6 +46,12 @@ func CreateSchema(path string, strict bool) (string, error) {
 			return "", fmt.Errorf("%s: %w", name, err)
 		}
 
+		def, err := expressionToJSONObject(variable.Variable.Default)
+		if err != nil {
+			return "", fmt.Errorf("error converting default value to JSON object: %w", err)
+		}
+		node["default"] = def
+
 		node["description"] = variable.Variable.Description
 
 		properties[name] = node
