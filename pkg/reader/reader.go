@@ -4,22 +4,21 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/AislingHPE/TerraSchema/pkg/model"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+
+	"github.com/AislingHPE/TerraSchema/pkg/model"
 )
 
-var (
-	fileSchema = &hcl.BodySchema{
-		Blocks: []hcl.BlockHeaderSchema{
-			{
-				Type:       "variable",
-				LabelNames: []string{"name"},
-			},
+var fileSchema = &hcl.BodySchema{
+	Blocks: []hcl.BlockHeaderSchema{
+		{
+			Type:       "variable",
+			LabelNames: []string{"name"},
 		},
-	}
-)
+	},
+}
 
 var ErrFilesNotFound = fmt.Errorf("no .tf files found in directory")
 
@@ -43,6 +42,9 @@ func GetVarMap(path string) (map[string]model.TranslatedVariable, error) {
 		}
 
 		blocks, _, d := file.Body.PartialContent(fileSchema)
+		if d.HasErrors() {
+			return nil, d
+		}
 		for _, block := range blocks.Blocks {
 			name, translated, err := getTranslatedVariableFromBlock(block, file)
 			if err != nil {

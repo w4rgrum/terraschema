@@ -35,7 +35,16 @@ func CreateSchema(path string, strict bool) (string, error) {
 		if variable.Required {
 			requiredArray = append(requiredArray, name)
 		}
-		node := make(map[string]any)
+		tc, err := getTypeConstraint(variable.Variable.Type)
+		if err != nil {
+			return "", fmt.Errorf("getting type constraint for %s: %w", name, err)
+		}
+
+		nullableIsTrue := variable.Variable.Nullable != nil && *variable.Variable.Nullable
+		node, err := getNodeFromType(name, tc, nullableIsTrue, strict)
+		if err != nil {
+			return "", fmt.Errorf("%s: %w", name, err)
+		}
 
 		node["description"] = variable.Variable.Description
 

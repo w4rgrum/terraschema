@@ -16,6 +16,7 @@ func main() {
 	output, err := jsonschema.CreateSchema(path, strict)
 	if err != nil {
 		fmt.Println(err)
+
 		return
 	}
 	fmt.Println(output)
