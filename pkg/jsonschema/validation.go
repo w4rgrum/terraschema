@@ -11,7 +11,7 @@ type conditionMutator func(hcl.Expression, string, string) (map[string]any, erro
 
 var ErrConditionNotApplied = fmt.Errorf("condition could not be applied")
 
-func parseConditionToNode(ex hcl.Expression, conditionString string, name string, m *map[string]any) error {
+func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[string]any) error {
 	if m == nil {
 		return fmt.Errorf("m is nil")
 	}

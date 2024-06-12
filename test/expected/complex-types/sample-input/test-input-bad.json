@@ -1,0 +1,58 @@
+{
+    "$schema": "../schema.json",
+    "new_field": "file which does not follow the JSON schema.",
+    "a_very_complicated_object": {
+        "a": {},
+        "b": [
+            [
+                "a",
+                "b",
+                "c"
+            ]
+        ],
+        "c": {
+            "a": [
+                "a"
+            ],
+            "b": "b"
+        },
+        "d": {
+            "a": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d",
+                    1
+                ],
+                1
+            ],
+            "b": false
+        },
+        "e": [
+            "a",
+            false
+        ],
+        "f": [
+            [
+                "a"
+            ],
+            [
+                "b"
+            ],
+            [
+                "a"
+            ],
+            [
+                1
+            ]
+        ]
+    },
+    "an_object_with_optional": {
+        "a": true,
+        "b": "a",
+        "d": 1
+    }
+}

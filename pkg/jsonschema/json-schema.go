@@ -69,9 +69,12 @@ func createNode(name string, v model.TranslatedVariable, strict bool) (map[strin
 		return nil, fmt.Errorf("%s: %w", name, err)
 	}
 
-	def, err := expressionToJSONObject(v.Variable.Default)
-	if err != nil {
-		return nil, fmt.Errorf("error converting default value to JSON object: %w", err)
+	if v.Variable.Default != nil {
+		def, err := expressionToJSONObject(v.Variable.Default)
+		if err != nil {
+			return nil, fmt.Errorf("error converting default value to JSON object: %w", err)
+		}
+		node["default"] = def
 	}
 
 	if v.Variable.Validation != nil && v.ConditionAsString != nil {
@@ -81,9 +84,9 @@ func createNode(name string, v model.TranslatedVariable, strict bool) (map[strin
 		}
 	}
 
-	node["default"] = def
-
-	node["description"] = v.Variable.Description
+	if v.Variable.Description != nil {
+		node["description"] = v.Variable.Description
+	}
 
 	return node, nil
 }

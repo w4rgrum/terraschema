@@ -20,6 +20,10 @@ var simpleTypeMap = map[string]string{
 // More info on exactly how this works is here:
 // https://pkg.go.dev/github.com/zclconf/go-cty@v1.14.4/cty#Type.MarshalJSON
 func getTypeConstraint(in hcl.Expression) (any, error) {
+	if in == nil {
+		return "any", nil
+	}
+
 	t, d := typeexpr.TypeConstraint(in)
 	if d.HasErrors() {
 		return nil, fmt.Errorf("could not parse type constraint from expression: %w", d)

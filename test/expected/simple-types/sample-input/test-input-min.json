@@ -1,0 +1,5 @@
+{
+    "$schema": "../schema.json",
+    "a_nullable_string": null,
+    "a_number": -5.2
+}

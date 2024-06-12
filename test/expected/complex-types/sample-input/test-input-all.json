@@ -1,0 +1,57 @@
+{
+    "$schema": "../schema.json",
+    "a_very_complicated_object": {
+        "a": "string",
+        "b": [
+            [
+                "string",
+                "string",
+                "string"
+            ],
+            true
+        ],
+        "c": {
+            "a": [
+                "string"
+            ],
+            "b": [
+                "b"
+            ]
+        },
+        "d": {
+            "a": [
+                [
+                    "string",
+                    "string"
+                ],
+                [
+                    "string",
+                    "string"
+                ]
+            ],
+            "b": 1
+        },
+        "e": [
+            "string",
+            1
+        ],
+        "f": [
+            [
+                "string"
+            ],
+            [
+                "string-2"
+            ],
+            [
+                "string",
+                "string-2"
+            ]
+        ]
+    },
+    "an_object_with_optional": {
+        "a": "d",
+        "b": 2,
+        "c": false,
+        "d": "Optional string"
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "$schema": "../schema.json",
+    "a_bool": 1,
+    "a_list": [
+        1,
+        "e",
+        "f"
+    ],
+    "a_map_of_strings": {
+        "d": 1,
+        "e": false,
+        "f": "f"
+    },
+    "a_nullable_string": 0,
+    "a_set": [
+        "d",
+        "d",
+        "f"
+    ],
+    "a_string": false,
+    "a_tuple": [
+        "d",
+        2
+    ],
+    "a_variable_in_another_file": "Yet another string",
+    "an_object": {
+        "a": "d",
+        "c": 1,
+        "d": "extra fields in objects are allowed, but are ignored by terraform"
+    }
+}

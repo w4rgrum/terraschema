@@ -1,0 +1,33 @@
+{
+    "$schema": "../schema.json",
+    "a_bool": true,
+    "a_list": [
+        "d",
+        "e",
+        "f"
+    ],
+    "a_map_of_strings": {
+        "d": "d",
+        "e": "e",
+        "f": "f"
+    },
+    "a_nullable_string": "Hello, World!",
+    "a_number": 42,
+    "a_set": [
+        "d",
+        "e",
+        "f"
+    ],
+    "a_string": "Another string",
+    "a_tuple": [
+        "d",
+        2,
+        false
+    ],
+    "a_variable_in_another_file": "Yet another string",
+    "an_object": {
+        "a": "d",
+        "b": 2,
+        "c": false
+    }
+}
