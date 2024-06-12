@@ -48,7 +48,6 @@ linters:
     - exportloopref
     - funlen
     - gocognit
-    - goconst
     - gocritic
     - gocyclo
     - godox

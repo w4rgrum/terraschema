@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/AislingHPE/TerraSchema/pkg/model"
 	"github.com/AislingHPE/TerraSchema/pkg/reader"
 )
 
@@ -35,24 +36,10 @@ func CreateSchema(path string, strict bool) (string, error) {
 		if variable.Required {
 			requiredArray = append(requiredArray, name)
 		}
-		tc, err := getTypeConstraint(variable.Variable.Type)
+		node, err := createNode(name, variable, strict)
 		if err != nil {
-			return "", fmt.Errorf("getting type constraint for %s: %w", name, err)
+			return "", fmt.Errorf("error creating node for %s: %w", name, err)
 		}
-
-		nullableIsTrue := variable.Variable.Nullable != nil && *variable.Variable.Nullable
-		node, err := getNodeFromType(name, tc, nullableIsTrue, strict)
-		if err != nil {
-			return "", fmt.Errorf("%s: %w", name, err)
-		}
-
-		def, err := expressionToJSONObject(variable.Variable.Default)
-		if err != nil {
-			return "", fmt.Errorf("error converting default value to JSON object: %w", err)
-		}
-		node["default"] = def
-
-		node["description"] = variable.Variable.Description
 
 		properties[name] = node
 	}
@@ -68,4 +55,35 @@ func CreateSchema(path string, strict bool) (string, error) {
 	}
 
 	return string(out), nil
+}
+
+func createNode(name string, v model.TranslatedVariable, strict bool) (map[string]any, error) {
+	tc, err := getTypeConstraint(v.Variable.Type)
+	if err != nil {
+		return nil, fmt.Errorf("getting type constraint for %s: %w", name, err)
+	}
+
+	nullableIsTrue := v.Variable.Nullable != nil && *v.Variable.Nullable
+	node, err := getNodeFromType(name, tc, nullableIsTrue, strict)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", name, err)
+	}
+
+	def, err := expressionToJSONObject(v.Variable.Default)
+	if err != nil {
+		return nil, fmt.Errorf("error converting default value to JSON object: %w", err)
+	}
+
+	if v.Variable.Validation != nil && v.ConditionAsString != nil {
+		err = parseConditionToNode(v.Variable.Validation.Condition, *v.ConditionAsString, name, &node)
+		if err != nil && !errors.Is(err, ErrConditionNotApplied) {
+			return nil, fmt.Errorf("error parsing condition for %s: %w", name, err)
+		}
+	}
+
+	node["default"] = def
+
+	node["description"] = v.Variable.Description
+
+	return node, nil
 }

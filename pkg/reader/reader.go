@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 
 	"github.com/AislingHPE/TerraSchema/pkg/model"
 )
@@ -58,14 +59,14 @@ func GetVarMap(path string) (map[string]model.TranslatedVariable, error) {
 }
 
 func getTranslatedVariableFromBlock(block *hcl.Block, file *hcl.File) (string, model.TranslatedVariable, error) {
-	attributes, d := block.Body.JustAttributes()
-	if d.HasErrors() {
-		return "", model.TranslatedVariable{}, d
+	syntaxBody, ok := block.Body.(*hclsyntax.Body)
+	if !ok {
+		return "", model.TranslatedVariable{}, fmt.Errorf("block body is not hclsyntax.Body")
 	}
 
 	name := block.Labels[0]
 	variable := model.Variable{}
-	d = gohcl.DecodeBody(block.Body, nil, &variable)
+	d := gohcl.DecodeBody(block.Body, nil, &variable)
 	if d.HasErrors() {
 		return name, model.TranslatedVariable{}, d
 	}
@@ -78,7 +79,7 @@ func getTranslatedVariableFromBlock(block *hcl.Block, file *hcl.File) (string, m
 	// to nil.
 
 	// check if 'default' exists in the block directly
-	if _, ok := attributes["default"]; ok {
+	if _, ok := syntaxBody.Attributes["default"]; ok {
 		out.DefaultAsString = expressionAsStringPointer(variable.Default, file)
 		out.Required = false
 	} else {
@@ -87,7 +88,7 @@ func getTranslatedVariableFromBlock(block *hcl.Block, file *hcl.File) (string, m
 	}
 
 	// check if 'type' exists in the block directly
-	if _, ok := attributes["type"]; ok {
+	if _, ok := syntaxBody.Attributes["type"]; ok {
 		out.TypeAsString = expressionAsStringPointer(variable.Type, file)
 	} else {
 		// do not keep a hcl expression for 'type' if no 'type' field is present
