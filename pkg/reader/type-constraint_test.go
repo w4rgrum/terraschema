@@ -1,4 +1,4 @@
-package jsonschema
+package reader
 
 import (
 	"encoding/json"
@@ -9,8 +9,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
-
-	"github.com/AislingHPE/TerraSchema/pkg/reader"
 )
 
 func TestGetTypeConstraint(t *testing.T) {
@@ -31,8 +29,8 @@ func TestGetTypeConstraint(t *testing.T) {
 			expected, err := os.ReadFile(filepath.Join(expectedPath, name, "type-constraints.json"))
 			require.NoError(t, err)
 
-			varMap, err := reader.GetVarMap(filepath.Join(tfPath, name))
-			if err != nil && !errors.Is(err, reader.ErrFilesNotFound) {
+			varMap, err := GetVarMap(filepath.Join(tfPath, name))
+			if err != nil && !errors.Is(err, ErrFilesNotFound) {
 				t.Errorf("error reading tf files: %v", err)
 			}
 
@@ -48,7 +46,7 @@ func TestGetTypeConstraint(t *testing.T) {
 					t.Errorf("Variable %s not found in expected map", key)
 				}
 
-				constraint, err := getTypeConstraint(val.Variable.Type)
+				constraint, err := GetTypeConstraint(val.Variable.Type)
 				require.NoError(t, err)
 
 				if d := cmp.Diff(expectedVal, constraint); d != "" {

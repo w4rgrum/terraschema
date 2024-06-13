@@ -58,7 +58,7 @@ func CreateSchema(path string, strict bool) (string, error) {
 }
 
 func createNode(name string, v model.TranslatedVariable, strict bool) (map[string]any, error) {
-	tc, err := getTypeConstraint(v.Variable.Type)
+	tc, err := reader.GetTypeConstraint(v.Variable.Type)
 	if err != nil {
 		return nil, fmt.Errorf("getting type constraint for %s: %w", name, err)
 	}
