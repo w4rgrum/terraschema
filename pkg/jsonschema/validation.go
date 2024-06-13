@@ -12,7 +12,7 @@ var ErrConditionNotApplied = fmt.Errorf("condition could not be applied")
 
 func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[string]any) error {
 	if m == nil {
-		return fmt.Errorf("m is nil")
+		return fmt.Errorf("node is nil")
 	}
 	t, ok := (*m)["type"].(string)
 	if !ok {
@@ -27,8 +27,7 @@ func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[strin
 	for _, fn := range functions {
 		updatedNode, err := fn(ex, name, t)
 		if err == nil {
-			// fmt.Printf("Condition of form %q applied successfully to %q\n", conditionName, name)
-			// apply blank node to m:
+			// apply updated node to m:
 			for k, v := range updatedNode {
 				(*m)[k] = v
 			}

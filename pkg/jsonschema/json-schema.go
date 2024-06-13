@@ -71,10 +71,11 @@ func createNode(name string, v model.TranslatedVariable, strict bool) (map[strin
 		node["default"] = def
 	}
 
-	if v.Variable.Validation != nil && v.Variable.Validation.Condition != nil {
+	if v.Variable.Validation != nil && v.ConditionAsString != nil {
 		err = parseConditionToNode(v.Variable.Validation.Condition, *v.ConditionAsString, name, &node)
-		if err != nil && !errors.Is(err, ErrConditionNotApplied) {
-			return nil, fmt.Errorf("error parsing condition for %s: %w", name, err)
+		// if an error occurs, log it and continue.
+		if err != nil {
+			fmt.Printf("couldn't apply validation for %q with condition %q. Error: %v\n", name, *v.ConditionAsString, err)
 		}
 	}
 

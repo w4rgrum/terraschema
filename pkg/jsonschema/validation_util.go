@@ -223,12 +223,8 @@ func flipSign(sign *hclsyntax.Operation) *hclsyntax.Operation {
 		hclsyntax.OpLessThanOrEqual:    hclsyntax.OpGreaterThanOrEqual,
 		hclsyntax.OpEqual:              hclsyntax.OpEqual,
 	}
-	newSign, ok := flip[sign]
-	if !ok {
-		fmt.Printf("sign not recognised %v", sign)
-
-		return nil
-	}
+	// nil if sign is not in the map.
+	newSign := flip[sign]
 
 	return newSign
 }
