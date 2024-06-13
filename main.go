@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -19,5 +20,12 @@ func main() {
 
 		return
 	}
-	fmt.Println(output)
+	jsonOutput, err := json.MarshalIndent(output, "", "    ")
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	fmt.Println(jsonOutput)
 }

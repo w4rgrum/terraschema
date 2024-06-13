@@ -42,21 +42,12 @@ func TestExpressionToJSONObject_Default(t *testing.T) {
 			}
 
 			for key, val := range varMap {
-				if val.DefaultAsString == nil {
+				if val.Variable.Default == nil {
 					continue
 				}
 
-				defaultValue, err := expressionToJSONObject(val.Variable.Default)
+				defaults[key], err = expressionToJSONObject(val.Variable.Default)
 				require.NoError(t, err)
-
-				defaultJSON, err := json.Marshal(defaultValue)
-				require.NoError(t, err)
-
-				var defaultUnmarshaled any
-				err = json.Unmarshal(defaultJSON, &defaultUnmarshaled)
-				require.NoError(t, err)
-
-				defaults[key] = defaultUnmarshaled
 			}
 
 			if len(defaults) != len(expectedMap) {

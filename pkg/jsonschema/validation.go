@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
-	ctyjson "github.com/zclconf/go-cty/cty/json"
 )
 
 type conditionMutator func(hcl.Expression, string, string) (map[string]any, error)
@@ -42,7 +41,7 @@ func parseConditionToNode(ex hcl.Expression, _ string, name string, m *map[strin
 }
 
 func isOneOf(ex hcl.Expression, name string, _ string) (map[string]any, error) {
-	enum := []ctyjson.SimpleJSONValue{}
+	enum := []any{}
 	err := walkIsOneOf(ex, name, &enum)
 	if err != nil {
 		return nil, err
@@ -70,13 +69,12 @@ func contains(ex hcl.Expression, name string, _ string) (map[string]any, error) 
 		return nil, fmt.Errorf("second argument is not a direct reference to the input variable")
 	}
 
-	newEnum := []ctyjson.SimpleJSONValue{}
+	newEnum := []any{}
 	for _, val := range l {
-		b, d := val.Value(nil)
-		if d.HasErrors() {
-			return nil, fmt.Errorf("value in list could not be evaluated, it might be a variable")
+		simple, err := expressionToJSONObject(val)
+		if err != nil {
+			return nil, fmt.Errorf("value in list could not be converted to JSON")
 		}
-		simple := ctyjson.SimpleJSONValue{Value: b}
 		newEnum = append(newEnum, simple)
 	}
 
@@ -121,11 +119,10 @@ func canRegex(ex hcl.Expression, name string, t string) (map[string]any, error) 
 		return nil, fmt.Errorf("second argument is not a direct reference to the input variable")
 	}
 
-	pattern, d := regexArgs[0].Value(nil)
-	if d.HasErrors() {
-		return nil, fmt.Errorf("could not evaluate regex pattern")
+	patternJSON, err := expressionToJSONObject(regexArgs[0])
+	if err != nil {
+		return nil, fmt.Errorf("pattern could not be converted to JSON: %w", err)
 	}
-	patternJSON := ctyjson.SimpleJSONValue{Value: pattern}
 
 	return map[string]any{"pattern": patternJSON}, nil
 }

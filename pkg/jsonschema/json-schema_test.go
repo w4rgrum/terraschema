@@ -34,14 +34,11 @@ func TestCreateSchema(t *testing.T) {
 			result, err := CreateSchema(filepath.Join(tfPath, name), false)
 			require.NoError(t, err)
 
-			var expectedMap, resultMap map[string]interface{}
+			var expectedMap map[string]interface{}
 			err = json.Unmarshal(expected, &expectedMap)
 			require.NoError(t, err)
 
-			err = json.Unmarshal([]byte(result), &resultMap)
-			require.NoError(t, err)
-
-			if d := cmp.Diff(expectedMap, resultMap); d != "" {
+			if d := cmp.Diff(expectedMap, result); d != "" {
 				t.Errorf("Schema has incorrect value (-want,+got):\n%s", d)
 			}
 		})

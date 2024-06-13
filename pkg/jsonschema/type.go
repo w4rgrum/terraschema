@@ -116,7 +116,7 @@ func getObject(in []any, strict bool) (map[string]any, error) {
 		}
 	}
 
-	required := []string{}
+	required := []any{}
 	properties := make(map[string]any)
 
 	for key, val := range inMap {
@@ -132,7 +132,7 @@ func getObject(in []any, strict bool) (map[string]any, error) {
 
 	node["properties"] = properties
 
-	slices.Sort(required)
+	slices.SortFunc(required, sortInterfaceAlphabetical)
 	node["required"] = required
 
 	return node, nil
@@ -211,8 +211,8 @@ func getTuple(in []any, strict bool) (map[string]any, error) {
 		items = append(items, newNode)
 	}
 	node["items"] = items
-	node["minItems"] = len(items)
-	node["maxItems"] = len(items)
+	node["minItems"] = float64(len(items))
+	node["maxItems"] = float64(len(items))
 
 	return node, nil
 }

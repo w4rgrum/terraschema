@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty/gocty"
-	ctyjson "github.com/zclconf/go-cty/cty/json"
 )
 
 func isExpressionVarName(ex hcl.Expression, name string) bool {
@@ -234,7 +233,7 @@ func flipSign(sign *hclsyntax.Operation) *hclsyntax.Operation {
 	return newSign
 }
 
-func walkIsOneOf(ex hcl.Expression, name string, enum *[]ctyjson.SimpleJSONValue) error {
+func walkIsOneOf(ex hcl.Expression, name string, enum *[]any) error {
 	switch ex := ex.(type) {
 	case *hclsyntax.BinaryOpExpr:
 		switch ex.Op {
@@ -257,19 +256,19 @@ func walkIsOneOf(ex hcl.Expression, name string, enum *[]ctyjson.SimpleJSONValue
 	}
 }
 
-func parseEqualityExpression(ex *hclsyntax.BinaryOpExpr, name string, enum *[]ctyjson.SimpleJSONValue) error {
+func parseEqualityExpression(ex *hclsyntax.BinaryOpExpr, name string, enum *[]any) error {
 	if isExpressionVarName(ex.RHS, name) {
 		// swap the LHS and RHS
 		ex.LHS, ex.RHS = ex.RHS, ex.LHS
 	}
 
 	if isExpressionVarName(ex.LHS, name) {
-		val, diags := ex.RHS.Value(nil)
-		if diags.HasErrors() {
-			return fmt.Errorf("could not evaluate expression")
+		object, err := expressionToJSONObject(ex.RHS)
+		if err != nil {
+			return fmt.Errorf("value could not be converted to JSON: %w", err)
 		}
 
-		*enum = append(*enum, ctyjson.SimpleJSONValue{Value: val})
+		*enum = append(*enum, object)
 
 		return nil
 	}

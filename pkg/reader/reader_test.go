@@ -26,10 +26,10 @@ func TestGetVarMap_Required(t *testing.T) {
 			}
 
 			for k, v := range varMap {
-				if v.Required && v.DefaultAsString != nil {
+				if v.Required && v.Variable.Default != nil {
 					t.Errorf("Variable %s is required but has a default", k)
 				}
-				if !v.Required && v.DefaultAsString == nil {
+				if !v.Required && v.Variable.Default == nil {
 					t.Errorf("Variable %s is not required but has no default", k)
 				}
 			}

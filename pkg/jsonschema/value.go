@@ -1,6 +1,8 @@
 package jsonschema
 
 import (
+	"encoding/json"
+
 	"github.com/hashicorp/hcl/v2"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 )
@@ -12,5 +14,21 @@ func expressionToJSONObject(in hcl.Expression) (any, error) {
 		return nil, d
 	}
 
-	return ctyjson.SimpleJSONValue{Value: v}, nil
+	// convert the value to a simple JSON value, so that it can
+	// be reliably marshaled to JSON. Then, unmarshal it to an
+	// interface{} so that it can be passed around the code without
+	// the additional type information.
+	simpleObject := ctyjson.SimpleJSONValue{Value: v}
+	simpleAsJSON, err := simpleObject.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	var out any
+	err = json.Unmarshal(simpleAsJSON, &out)
+	if err != nil {
+		return nil, err
+	}
+
+	return out, nil
 }
