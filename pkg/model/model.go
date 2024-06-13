@@ -4,24 +4,24 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
-// Variable represents a Terraform variable block. 'It contains all fields that can be present in a variable block.
+// VariableBlock represents a Terraform variable block. It contains all fields that can be present in a variable block.
 // The variable name is stored separately.
-type Variable struct {
-	Default     hcl.Expression `hcl:"default"`
-	Description *string        `hcl:"description"`
-	Nullable    *bool          `hcl:"nullable"`
+type VariableBlock struct {
+	Default     hcl.Expression `hcl:"default,optional"`
+	Description *string        `hcl:"description,optional"`
+	Nullable    *bool          `hcl:"nullable,optional"`
 	// Sensitive is ignored.
-	Sensitive *bool `hcl:"sensitive"`
+	Sensitive *bool `hcl:"sensitive,optional"`
 	// Validation blocks can be used to add extra rules to the JSON schema, as long as their conditions
 	// are written in a certain format.
 	Validation *ValidationBlock `hcl:"validation,block"`
-	Type       hcl.Expression   `hcl:"type"`
+	Type       hcl.Expression   `hcl:"type,optional"`
 }
 
 type ValidationBlock struct {
-	Condition hcl.Expression `hcl:"condition"`
+	Condition hcl.Expression `hcl:"condition,attr"`
 	// ErrorMessage is ignored.
-	ErrorMessage string `hcl:"error_message"`
+	ErrorMessage string `hcl:"error_message,attr"`
 }
 
 // TranslatedVariable contains the Variable struct, as well as some extra information that can be used for debugging.
@@ -38,5 +38,5 @@ type TranslatedVariable struct {
 	// Required is true if and only if the variable has no default value.
 	Required bool
 	// The variable block used to generate the other fields in this struct.
-	Variable Variable
+	Variable VariableBlock
 }
