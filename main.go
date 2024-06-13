@@ -27,5 +27,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(jsonOutput)
+	fmt.Println(string(jsonOutput))
 }
