@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	"github.com/AislingHPE/TerraSchema/pkg/model"
+	"github.com/AislingHPE/terraschema/pkg/model"
 )
 
 var fileSchema = &hcl.BodySchema{

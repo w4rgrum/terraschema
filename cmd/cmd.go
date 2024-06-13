@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/AislingHPE/TerraSchema/pkg/jsonschema"
+	"github.com/AislingHPE/terraschema/pkg/jsonschema"
 )
 
 // wanted behaviour:
@@ -34,7 +34,7 @@ var (
 	input                        string
 )
 
-// rootCmd is the base command for TerraSchema
+// rootCmd is the base command for terraschema
 var rootCmd = &cobra.Command{
 	Use:   "terraschema",
 	Short: "Generate JSON schema from HCL Variable Blocks in a Terraform/OpenTofu module",

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/AislingHPE/TerraSchema/pkg/model"
-	"github.com/AislingHPE/TerraSchema/pkg/reader"
+	"github.com/AislingHPE/terraschema/pkg/model"
+	"github.com/AislingHPE/terraschema/pkg/reader"
 )
 
 func CreateSchema(path string, strict bool) (map[string]any, error) {

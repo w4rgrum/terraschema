@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AislingHPE/TerraSchema/pkg/reader"
+	"github.com/AislingHPE/terraschema/pkg/reader"
 )
 
 func TestExpressionToJSONObject_Default(t *testing.T) {
