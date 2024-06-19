@@ -1,3 +1,5 @@
+# Copyright 2024 Hewlett Packard Enterprise Development LP
+
 variable "a_string" {
   type        = string
   default     = "a string"

@@ -1,3 +1,5 @@
+# Copyright 2024 Hewlett Packard Enterprise Development LP
+
 variable "an_object_with_optional" {
     type = object({
         a = string

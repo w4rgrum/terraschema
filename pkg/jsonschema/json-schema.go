@@ -1,3 +1,4 @@
+// (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 package jsonschema
 
 import (
@@ -5,8 +6,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/AislingHPE/terraschema/pkg/model"
-	"github.com/AislingHPE/terraschema/pkg/reader"
+	"github.com/HewlettPackard/terraschema/pkg/model"
+	"github.com/HewlettPackard/terraschema/pkg/reader"
 )
 
 func CreateSchema(path string, strict bool) (map[string]any, error) {

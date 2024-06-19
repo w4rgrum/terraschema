@@ -1,3 +1,4 @@
+// (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 package cmd
 
 import (
@@ -8,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/AislingHPE/terraschema/pkg/jsonschema"
+	"github.com/HewlettPackard/terraschema/pkg/jsonschema"
 )
 
 // wanted behaviour:

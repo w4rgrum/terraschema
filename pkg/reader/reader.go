@@ -1,3 +1,4 @@
+// (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 package reader
 
 import (
@@ -8,7 +9,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	"github.com/AislingHPE/terraschema/pkg/model"
+	"github.com/HewlettPackard/terraschema/pkg/model"
 )
 
 var fileSchema = &hcl.BodySchema{

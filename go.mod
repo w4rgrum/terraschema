@@ -1,4 +1,4 @@
-module github.com/AislingHPE/terraschema
+module github.com/HewlettPackard/terraschema
 
 go 1.21.6
 

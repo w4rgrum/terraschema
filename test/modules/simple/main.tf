@@ -1,3 +1,5 @@
+# Copyright 2024 Hewlett Packard Enterprise Development LP
+
 terraform {
     required_version = ">= 0.13.0"
 }

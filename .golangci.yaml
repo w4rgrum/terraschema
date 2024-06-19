@@ -6,7 +6,7 @@ linters-settings:
   lll:
     line-length: 128
   goimports:
-    local-prefixes: "github.com/AislingHPE"
+    local-prefixes: "github.com/HewlettPackard"
   godox:
     keywords:
       - OPTIMIZE
@@ -43,7 +43,6 @@ linters:
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
     - exportloopref
     - funlen

@@ -1,3 +1,4 @@
+// (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 package jsonschema
 
 import (
@@ -10,7 +11,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AislingHPE/terraschema/pkg/reader"
+	"github.com/HewlettPackard/terraschema/pkg/reader"
 )
 
 func TestExpressionToJSONObject_Default(t *testing.T) {
