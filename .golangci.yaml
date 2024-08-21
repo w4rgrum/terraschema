@@ -44,7 +44,6 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exportloopref
     - funlen
     - gocognit
     - gocritic
@@ -93,11 +92,11 @@ linters:
 
 issues:
   include:
-      # Match function comment to function name
-      - EXC0012
-      - EXC0013
-      - EXC0014
-      - EXC0015
+    # Match function comment to function name
+    - EXC0012
+    - EXC0013
+    - EXC0014
+    - EXC0015
 
   exclude:
     # We want to allow exporting const/var/type without comments
@@ -111,7 +110,7 @@ issues:
   exclude-rules:
     # ignore function length for tests as look up tables typically exceed.
     - linters:
-        - funlen
+      - funlen
       path: _test\.go
 
   max-same-issues: 0

@@ -19,12 +19,6 @@ import (
 // - output: file, default is ./schema.json. Allow creation of directories.
 // - input: folder, default is .
 // - allow-empty: if no variables are found, print empty schema and exit with 0
-// error handling: print to stdout and exit with non-zero exit code. Do not print schema.
-
-// Also TODO: how do we handle errors for validation rules? If a validation rule fails to be translated,
-// we need to alert the user somehow, and it would be nice to print the associated errors, but there might be 4
-// errors since we try 4 rules. We also can't halt the program, since it might be an expected error. Logging is also
-// much more difficult if we need to print the schema itself to stdout in some cases.
 
 var (
 	disallowAdditionalProperties bool
