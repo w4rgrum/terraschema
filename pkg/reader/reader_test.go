@@ -23,15 +23,15 @@ func TestGetVarMap_Required(t *testing.T) {
 			t.Parallel()
 			varMap, err := GetVarMap(filepath.Join(tfPath, name))
 			if err != nil && !errors.Is(err, ErrFilesNotFound) {
-				t.Errorf("error reading tf files: %v", err)
+				t.Errorf("Error reading tf files: %v", err)
 			}
 
 			for k, v := range varMap {
 				if v.Required && v.Variable.Default != nil {
-					t.Errorf("Variable %s is required but has a default", k)
+					t.Errorf("Variable %q is required but has a default", k)
 				}
 				if !v.Required && v.Variable.Default == nil {
-					t.Errorf("Variable %s is not required but has no default", k)
+					t.Errorf("Variable %q is not required but has no default", k)
 				}
 			}
 		})
