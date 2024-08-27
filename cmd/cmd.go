@@ -6,19 +6,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/HewlettPackard/terraschema/pkg/jsonschema"
 )
-
-// wanted behaviour:
-// - disallow-additional-properties: disallow additional properties in schema (default is false)
-// - overwrite: overwrite an existing file (default is false for safety reasons)
-// - stdout: suppress errors and output schema to stdout (generally not recommended)
-// - output: file, default is ./schema.json. Allow creation of directories.
-// - input: folder, default is .
-// - allow-empty: if no variables are found, print empty schema and exit with 0
 
 var (
 	disallowAdditionalProperties bool
@@ -26,10 +19,8 @@ var (
 	allowEmpty                   bool
 	requireAll                   bool
 	outputStdOut                 bool
-	output                       string
-	input                        string
-
-	errReturned error
+	inputPath                    string
+	outputPath                   string
 )
 
 // rootCmd is the base command for terraschema
@@ -42,27 +33,24 @@ var rootCmd = &cobra.Command{
 		"them to a schema which complies with JSON Schema Draft-07.\nThe default behaviour is to scan " +
 		"the current directory and output a schema file called 'schema.json' in the same location. " +
 		"\nFor more information see https://github.com/HewlettPackard/terraschema.",
-	Run: runCommand,
-	PostRun: func(cmd *cobra.Command, args []string) {
-		if errReturned != nil {
-			fmt.Printf("error: %v\n", errReturned)
-			os.Exit(1)
-		}
-	},
+	PreRunE:      preRunCommand,
+	RunE:         runCommand,
+	SilenceUsage: true,
 }
 
+// Execute command with the following flags:
+//   - disallow-additional-properties: disallow additional properties in schema (default is false)
+//   - overwrite: overwrite an existing file (default is false for safety reasons)
+//   - stdout: suppress errors and output schema to stdout (generally not recommended)
+//   - output: file, default is ./schema.json. Allow creation of directories.
+//   - input: folder, default is .
+//   - allow-empty: if no variables are found, print empty schema and exit with 0
+//   - require-all: require all variables to be present in the schema, even if a default value is specified
 func Execute() error {
 	return rootCmd.Execute()
 }
 
 func init() {
-	// TODO: implement
-	rootCmd.Flags().BoolVar(&overwrite, "overwrite", false, "allow overwriting an existing file")
-	// TODO: implement
-	rootCmd.Flags().BoolVar(&outputStdOut, "stdout", false,
-		"output JSON Schema content to stdout instead of a file and disable error output",
-	)
-
 	rootCmd.Flags().BoolVar(&disallowAdditionalProperties, "disallow-additional-properties", false,
 		"set additionalProperties to false in the JSON Schema and in nested objects",
 	)
@@ -72,57 +60,126 @@ func init() {
 	)
 
 	rootCmd.Flags().BoolVar(&requireAll, "require-all", false,
-		"set all variables to be 'required' in the JSON Schema, even if a default value is specified",
+		"set all variables to be 'required' in the JSON Schema, even if a default\n"+
+			"value is specified",
 	)
 
-	rootCmd.Flags().StringVarP(&input, "input", "i", ".",
+	rootCmd.Flags().StringVarP(&inputPath, "input", "i", ".",
 		"input folder containing a Terraform module",
 	)
 
-	// TODO: implement
-	rootCmd.Flags().StringVarP(&output, "output", "o", "schema.json",
+	rootCmd.Flags().StringVarP(&outputPath, "output", "o", "schema.json",
 		"output path for the JSON Schema file",
 	)
+
+	rootCmd.Flags().BoolVar(&overwrite, "overwrite", false,
+		"overwrite an existing schema file",
+	)
+
+	rootCmd.Flags().BoolVar(&outputStdOut, "stdout", false,
+		"output schema content to stdout instead of a file and disable any other logging\n"+
+			"unless an error occurs. Overrides 'debug' and 'output.",
+	)
+
+	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		_ = rootCmd.Usage()
+
+		return err
+	})
 }
 
-func runCommand(cmd *cobra.Command, args []string) {
-	path, err := filepath.Abs(input) // absolute path
+func preRunCommand(cmd *cobra.Command, args []string) error {
+	err := inputFileChecks()
 	if err != nil {
-		errReturned = fmt.Errorf("could not get absolute path for %q: %w", input, err)
-
-		return
+		return err
+	}
+	if !outputStdOut {
+		return outputFileChecks()
 	}
 
-	folder, err := os.Stat(path)
-	if err != nil {
-		errReturned = fmt.Errorf("could not access directory %q: %w", path, err)
+	return nil
+}
 
-		return
+func inputFileChecks() error {
+	_, err := filepath.Abs(inputPath) // absolute path
+	if err != nil {
+		return fmt.Errorf("could not get absolute path for %q: %w", inputPath, err)
+	}
+
+	folder, err := os.Stat(inputPath)
+	if err != nil {
+		return fmt.Errorf("could not access directory %q: %w", inputPath, err)
 	}
 
 	if !folder.IsDir() {
-		errReturned = fmt.Errorf("input %q is not a directory", path)
-
-		return
+		return fmt.Errorf("input path %q is not a directory", inputPath)
 	}
 
-	output, err := jsonschema.CreateSchema(path, jsonschema.CreateSchemaOptions{
+	return nil
+}
+
+func outputFileChecks() error {
+	_, err := filepath.Abs(outputPath) // absolute path
+	if err != nil {
+		return fmt.Errorf("could not get absolute path for %q: %w", outputPath, err)
+	}
+
+	outputFile, err := os.Stat(outputPath)
+	if err == nil {
+		if overwrite {
+			if outputFile.IsDir() {
+				return fmt.Errorf(
+					"output path %q is an existing directory, please specify a file path",
+					outputPath,
+				)
+			}
+		} else {
+			return fmt.Errorf("output path %q already exists, use --overwrite to overwrite", outputPath)
+		}
+	}
+
+	if !strings.HasSuffix(outputPath, ".json") {
+		fmt.Printf("Warning: output path %q does not have a .json extension, continuing\n", outputPath)
+	}
+
+	return nil
+}
+
+func runCommand(cmd *cobra.Command, args []string) error {
+	// TODO: suppress other printing while outputting to stdout (probably with slog)
+	outputMap, err := jsonschema.CreateSchema(inputPath, jsonschema.CreateSchemaOptions{
 		RequireAll:                requireAll,
 		AllowAdditionalProperties: !disallowAdditionalProperties,
 		AllowEmpty:                allowEmpty,
 	})
 	if err != nil {
-		errReturned = fmt.Errorf("error creating schema: %w", err)
-
-		return
+		return fmt.Errorf("error creating schema: %w", err)
 	}
 
-	jsonOutput, err := json.MarshalIndent(output, "", "    ")
+	jsonOutput, err := json.MarshalIndent(outputMap, "", "\t")
 	if err != nil {
-		errReturned = fmt.Errorf("error marshalling schema: %w", err)
-
-		return
+		return fmt.Errorf("error marshalling schema: %w", err)
 	}
 
-	fmt.Println(string(jsonOutput))
+	if outputStdOut {
+		fmt.Println(string(jsonOutput))
+
+		return nil
+	}
+
+	// create folder path for output file if it doesn't exist
+	err = os.MkdirAll(filepath.Dir(outputPath), 0o755)
+	if err != nil {
+		return fmt.Errorf("error creating folder for %q: %w", outputPath, err)
+	}
+
+	// Create a file with 644 file permissions. If this causes issues, we can use 600 instead later.
+	//nolint:gosec
+	err = os.WriteFile(outputPath, jsonOutput, 0o644)
+	if err != nil {
+		return fmt.Errorf("error writing schema to %q: %w", outputPath, err)
+	}
+	fmt.Printf("Schema written to %q\n", outputPath)
+
+	return nil
 }
