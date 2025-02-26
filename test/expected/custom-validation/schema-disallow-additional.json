@@ -192,5 +192,6 @@
 			"type": "object"
 		}
 	},
-	"required": []
+	"required": [],
+	"type": "object"
 }

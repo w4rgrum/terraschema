@@ -36,7 +36,7 @@ func CreateSchema(path string, options CreateSchemaOptions) (map[string]any, err
 	}
 
 	schemaOut["$schema"] = "http://json-schema.org/draft-07/schema#"
-
+	schemaOut["type"] = "object"
 	schemaOut["additionalProperties"] = options.AllowAdditionalProperties
 
 	properties := make(map[string]any)

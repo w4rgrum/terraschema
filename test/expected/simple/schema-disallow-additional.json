@@ -14,5 +14,6 @@
 	},
 	"required": [
 		"age"
-	]
+	],
+	"type": "object"
 }

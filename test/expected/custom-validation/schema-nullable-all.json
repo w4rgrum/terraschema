@@ -362,5 +362,6 @@
 			"title": "an_object_maximum_minimum_items: Select a type"
 		}
 	},
-	"required": []
+	"required": [],
+	"type": "object"
 }

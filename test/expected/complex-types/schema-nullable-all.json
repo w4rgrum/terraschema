@@ -186,5 +186,6 @@
 			"title": "an_object_with_optional: Select a type"
 		}
 	},
-	"required": []
+	"required": [],
+	"type": "object"
 }

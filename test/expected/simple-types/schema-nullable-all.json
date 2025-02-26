@@ -214,5 +214,6 @@
 	"required": [
 		"a_nullable_string",
 		"a_number"
-	]
+	],
+	"type": "object"
 }
