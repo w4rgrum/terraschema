@@ -27,6 +27,7 @@ var (
 	debugOut                     bool
 	exportVariables              bool
 	escapeJSON                   bool
+	ignoreVariables              []string
 )
 
 // rootCmd is the base command for terraschema
@@ -104,6 +105,10 @@ func init() {
 	rootCmd.Flags().BoolVar(&escapeJSON, "escape-json", false,
 		"escape JSON special characters in the output, so that the Schema can be used in a\n"+
 			"web context",
+	)
+	rootCmd.Flags().StringSliceVar(&ignoreVariables, "ignore-variable", []string{},
+		"ignore a variable by name when generating schema or exporting variables,\n"+
+			"repeating this argument allows you to ignore multiple variables",
 	)
 
 	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
@@ -183,6 +188,7 @@ func runCommand(cmd *cobra.Command, args []string) error {
 			DebugOut:        debugOut && !outputStdOut,
 			EscapeJSON:      escapeJSON,
 			Indent:          jsonIndent,
+			IgnoreVariables: ignoreVariables,
 		})
 		if err != nil {
 			return fmt.Errorf("error exporting variables: %w", err)
@@ -195,6 +201,7 @@ func runCommand(cmd *cobra.Command, args []string) error {
 			DebugOut:                  debugOut && !outputStdOut,
 			SuppressLogging:           outputStdOut,
 			NullableAll:               nullableAll,
+			IgnoreVariables:           ignoreVariables,
 		})
 		if err != nil {
 			return fmt.Errorf("error creating schema: %w", err)
