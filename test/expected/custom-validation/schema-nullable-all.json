@@ -2,6 +2,24 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"additionalProperties": true,
 	"properties": {
+		"a_complex_condition_with_complex_error_message": {
+			"anyOf": [
+				{
+					"title": "null",
+					"type": "null"
+				},
+				{
+					"items": {
+						"type": "string"
+					},
+					"title": "array",
+					"type": "array"
+				}
+			],
+			"default": [],
+			"description": "A list of names that must be 3-24 lowercase letters and numbers.",
+			"title": "a_complex_condition_with_complex_error_message: Select a type"
+		},
 		"a_list_maximum_minimum_length": {
 			"anyOf": [
 				{
